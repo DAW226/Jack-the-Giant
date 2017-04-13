@@ -32,6 +32,8 @@ class GameplayScene: SKScene, SKPhysicsContactDelegate {
     override func didMove(to view: SKView) {
         
         intializeVariables()
+        
+        physicsWorld.contactDelegate = self
     }
     
     override func update(_ currentTime: TimeInterval) {
@@ -45,32 +47,35 @@ class GameplayScene: SKScene, SKPhysicsContactDelegate {
     
     
     //DAW: The intial contact function -- Player contacting with collectables
-    func didBeginContact(contact: SKPhysicsContact) {
+    func didBegin(_ contact: SKPhysicsContact) {
     //DAW: The first body will always be the player.
         var firstBody = SKPhysicsBody()
         var secondBody = SKPhysicsBody()
     //DAW: Decaring bodyA (First Body) to Player
-        if contact.bodyA.node?.name == "Player" {
+        if contact.bodyA.node?.name! == "Player" {
             firstBody = contact.bodyA
             secondBody = contact.bodyB
         } else {
             firstBody = contact.bodyB
             secondBody = contact.bodyA
         }
+        
+        print("Contact happened between first body \(firstBody.node?.name!) and the \(secondBody.node?.name!)")
+        
         //DAW: Both of these statements need to be true or both false if you use the && sign
-        if firstBody.node?.name == "Player" && secondBody.node?.name == "Life" {
+        if firstBody.node?.name! == "Player" && secondBody.node?.name! == "Life" {
             //DAW: Play the sound of the life collectable
             //DAW: Change the life score
             GameplayController.instance.incrementLife()
             //DAW: Remove the life collectable from the game
             secondBody.node?.removeFromParent()
-        } else if firstBody.node?.name == "Player" && secondBody.node?.name == "Coin" {
+        } else if firstBody.node?.name! == "Player" && secondBody.node?.name! == "Coin" {
             //DAW: Play the scound of the coin collectable
             //DAW: Change the coin score
             GameplayController.instance.incrementCoin()
             //DAW: Remove the coin collectable from game
             secondBody.node?.removeFromParent()
-        } else if firstBody.node?.name == "Player" && secondBody.node?.name == "Dark Cloud" {
+        } else if firstBody.node?.name! == "Player" && secondBody.node?.name! == "Dark Cloud" {
             //DAW: Play the sound of death
             //DAW: Change the life score
             //DAW: Kill Player
@@ -126,7 +131,7 @@ class GameplayScene: SKScene, SKPhysicsContactDelegate {
     
     func intializeVariables() {
         
-        physicsWorld.contactDelegate = self
+        //physicsWorld.contactDelegate = self
         
         center = (self.scene?.size.width)! / (self.scene?.size.height)!
         
@@ -144,7 +149,7 @@ class GameplayScene: SKScene, SKPhysicsContactDelegate {
         
         cameraRespawnRocks = (mainCamera?.position.y)! - 400
         
-        print("Scene loaded!")
+        print("Menu scene loaded")
         
     }
     
